@@ -63,6 +63,7 @@ class BLESimplePeripheral:
 
     def _irq(self, event, data):
         global tim
+        global mororObj
         # Track connections so we can send notifications.
         if event == _IRQ_CENTRAL_CONNECT:
             tim.init(freq=10, mode=Timer.PERIODIC, callback=led_tick)
@@ -74,6 +75,7 @@ class BLESimplePeripheral:
             print("Disconnected", conn_handle)
             self._connections.remove(conn_handle)
             # Start advertising again to allow a new connection.
+            motorObj.stop()
             self._advertise()
         elif event == _IRQ_GATTS_WRITE:
             conn_handle, value_handle = data
@@ -101,11 +103,17 @@ class BLESimplePeripheral:
 
 def on_rx(v):
     global mororObj
-    motorObj.control(v[-2])
-    print("Rx: ", v[-2])
+    motorObj.control(v)
+    # print(v)
+    # print("Rx: ", v[-2])
+    print("RX:")
+    for b in v:
+        print(b, end=', ')
 
 def demo():
     global motorObj
+    motorObj.stop()
+
     ble = bluetooth.BLE()
     p = BLESimplePeripheral(ble)
     

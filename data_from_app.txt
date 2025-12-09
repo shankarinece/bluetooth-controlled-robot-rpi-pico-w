@@ -1,0 +1,26 @@
+
+Data received from different keys from the app.
+
+digital mode, data byte location 2 is 1
+up:     255, 1, 1, 1, 2, 0, 1, 0, RX:
+rt:     255, 1, 1, 1, 2, 0, 8, 0, RX:
+lt:     255, 1, 1, 1, 2, 0, 4, 0, RX:
+dn:     255, 1, 1, 1, 2, 0, 2, 0, RX:
+
+select: 255, 1, 1, 1, 2, 2, 0, 0, RX:
+start:  255, 1, 1, 1, 2, 1, 0, 0, RX:
+
+^       255, 1, 1, 1, 2, 4, 0, 0, RX:
+0       255, 1, 1, 1, 2, 8, 0, 0, RX:
+x       255, 1, 1, 1, 2, 16, 0, 0, RX:
+sq:     255, 1, 1, 1, 2, 32, 0, 0, RX:
+
+Joystick Mode, data byte location 2 is 2
+joystick data: 255, 1, 2, 1, 2, 0, 39, 0, RX:
+select:        255, 1, 2, 1, 2, 2, 0, 0, 
+               255, 1, 2, 1, 2, 0, 0, 0, 
+
+LED Brightness control
+255, 10, 3, 1, 1, 34, 0, RX:
+255, 10, 3, 1, 1, 35, 0, RX:
+255, 10, 3, 1, 1, 36, 0, 
