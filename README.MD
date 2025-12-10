@@ -21,7 +21,7 @@ In this mode, the joystick sends data from 0 to 199 when the joystick is moved, 
 Micropython is used to code the RPI MCU. [This example](https://github.com/micropython/micropython/blob/master/examples/bluetooth/ble_simple_peripheral.py) from BT interface is tweaked to process data from the Dabble app.
 
 # Development
-* Used VS Code with official (RPI Pico extension)[https://marketplace.visualstudio.com/items?itemName=raspberry-pi.raspberry-pi-pico] to perform development. This connects to pico when the board is connected over USB
+* Used VS Code with official [RPI Pico extension](https://marketplace.visualstudio.com/items?itemName=raspberry-pi.raspberry-pi-pico) to perform development. This connects to pico when the board is connected over USB
 * 
 # Schematics
 ![Pseudo schematics](/circuit.png)
