@@ -164,9 +164,11 @@ class Motor:
             self.wobbleState = 0
 
     def initiateShake(self):
+        self.shake(None)
         self.motorTimer.init(freq=2, mode=Timer.PERIODIC, callback=self.shake)
 
     def initiateWobble(self):
+        self.wobble(None)
         self.motorTimer.init(freq=2, mode=Timer.PERIODIC, callback=self.wobble)
 
     def stop(self):
