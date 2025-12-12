@@ -1,12 +1,20 @@
 
 from machine import Pin, PWM, Timer #importing PIN and PWM
 
-dutyCycleNormal = 15000
-dutyCycleTurningHigh = 20000
-dutyCycleTurningLow = 12000
+dutyCycleTurningHigh = 25000
+dutyCycleTurningLow = 15000
 digitalMode = 1
 joystickMode = 2
 
+dutyCycleNormal = (dutyCycleTurningHigh + dutyCycleTurningLow) // 2
+
+dcDiff = dutyCycleTurningHigh - dutyCycleNormal
+# 50 is the max value of angle per side the joystic feeds. 
+dcResolutionPerAngleVal = dcDiff//50
+# The idea here is to compute the dutycycle for turning based on the angle of joystic.
+# Example for right turn: dcRight = (angleValue * dcResolutionPerAngleVal) + dutyCycleNormal
+# Left wheel will be running at dutyCycleNormal, where as, the right turn wheel will be slightly higher based
+# on the joystic angle
 
 class Motor:
 
@@ -74,14 +82,22 @@ class Motor:
                 value = valueArray[6]
                 if value == 0:
                     self.stop()
-                elif value >= 25 and value <= 75:
-                    self.forward()
+                elif (value > 0 and value <= 50) or (value > 175):
+                    if value > 175:
+                        value = 1
+                    valueToBeAddedOrSubtracted = ((50-value) * dcResolutionPerAngleVal)
+                    rightDc = dutyCycleNormal + valueToBeAddedOrSubtracted
+                    leftDc = dutyCycleNormal - valueToBeAddedOrSubtracted
+                    self.fwdWithRight(rightDc, leftDc)
+                elif (value >= 51 and value <=100) or (value >=101 and value <125):
+                    if value > 100:
+                        value  = 100
+                    valueToBeAddedOrSubtracted = ((value - 51) * dcResolutionPerAngleVal)
+                    leftDc = dutyCycleNormal + valueToBeAddedOrSubtracted
+                    rightDc = dutyCycleNormal - valueToBeAddedOrSubtracted
+                    self.fwdWithleft(leftDc, rightDc)
                 elif value >= 125 and value <= 175:
                     self.reverse()
-                elif value > 75 and value < 125:
-                    self.left()
-                elif value > 175 or value < 25:
-                    self.right()
                 else:
                     self.stop()
             else: 
@@ -118,19 +134,41 @@ class Motor:
         # self.In4.high()
         pass
 
+    def fwdWithleft(self, dcForLeft, dcForRight):
+        if dcForLeft >= dutyCycleTurningHigh:
+            dcForLeft = dutyCycleTurningHigh
+        if dcForRight <= dutyCycleTurningLow:
+            dcForRight = dutyCycleTurningLow
+        self.rightWheelFwd.duty_u16(dcForRight)
+        self.rightWheelRev.duty_u16(0)
+        self.leftWheelFwd.duty_u16(dcForLeft)
+        self.leftWheelRev.duty_u16(0)
+        print("Fwd With Left..")
+
     def left(self):
         self.rightWheelFwd.duty_u16(dutyCycleTurningLow)
         self.rightWheelRev.duty_u16(0)
         self.leftWheelFwd.duty_u16(dutyCycleTurningHigh)
         self.leftWheelRev.duty_u16(0)
         print("Left..")
-        
+
+    def fwdWithRight(self, dcForRight, dcForLeft):
+        if dcForRight >= dutyCycleTurningHigh:
+            dcForRight = dutyCycleTurningHigh
+        if dcForLeft <= dutyCycleTurningLow:
+            dcForLeft = dutyCycleTurningLow
+        self.rightWheelFwd.duty_u16(dcForRight)
+        self.rightWheelRev.duty_u16(0)
+        self.leftWheelFwd.duty_u16(dcForLeft)
+        self.leftWheelRev.duty_u16(0)
+        print("Fwd With Right..")
+
     def right(self):
         self.rightWheelFwd.duty_u16(dutyCycleTurningHigh)
         self.rightWheelRev.duty_u16(0)
         self.leftWheelFwd.duty_u16(dutyCycleTurningLow)
         self.leftWheelRev.duty_u16(0)
-        print("right..")
+        print("Right..")
 
     def spinRight(self):
         self.rightWheelFwd.duty_u16(dutyCycleNormal)
