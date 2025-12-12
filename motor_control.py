@@ -2,7 +2,8 @@
 from machine import Pin, PWM, Timer #importing PIN and PWM
 
 dutyCycleNormal = 15000
-dutyCycleTurning = 20000
+dutyCycleTurningHigh = 20000
+dutyCycleTurningLow = 12000
 digitalMode = 1
 joystickMode = 2
 
@@ -118,16 +119,16 @@ class Motor:
         pass
 
     def left(self):
-        self.rightWheelFwd.duty_u16(dutyCycleNormal)
+        self.rightWheelFwd.duty_u16(dutyCycleTurningLow)
         self.rightWheelRev.duty_u16(0)
-        self.leftWheelFwd.duty_u16(dutyCycleTurning)
+        self.leftWheelFwd.duty_u16(dutyCycleTurningHigh)
         self.leftWheelRev.duty_u16(0)
         print("Left..")
         
     def right(self):
-        self.rightWheelFwd.duty_u16(dutyCycleTurning)
+        self.rightWheelFwd.duty_u16(dutyCycleTurningHigh)
         self.rightWheelRev.duty_u16(0)
-        self.leftWheelFwd.duty_u16(dutyCycleNormal)
+        self.leftWheelFwd.duty_u16(dutyCycleTurningLow)
         self.leftWheelRev.duty_u16(0)
         print("right..")
 
@@ -171,12 +172,14 @@ class Motor:
         self.wobble(None)
         self.motorTimer.init(freq=2, mode=Timer.PERIODIC, callback=self.wobble)
 
-    def stop(self):
+    def __stop(self):
         self.rightWheelFwd.duty_u16(0)
         self.rightWheelRev.duty_u16(0)
         self.leftWheelFwd.duty_u16(0)
         self.leftWheelRev.duty_u16(0)
+        
+    def stop(self):
         self.motorTimer.deinit()
-
+        self.__stop()
         print("Stopped..")
         pass
