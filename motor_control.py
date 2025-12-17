@@ -5,6 +5,7 @@ dutyCycleTurningHigh = 25000
 dutyCycleTurningLow = 15000
 digitalMode = 1
 joystickMode = 2
+accelerometerMode = 3
 
 dutyCycleNormal = (dutyCycleTurningHigh + dutyCycleTurningLow) // 2
 
@@ -78,7 +79,7 @@ class Motor:
                     self.right()
                 else:
                     self.stop()
-            elif mode == joystickMode:
+            elif mode == joystickMode or mode == accelerometerMode:
                 value = valueArray[6]
                 if value == 0:
                     self.stop()
